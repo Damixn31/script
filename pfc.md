@@ -1,4 +1,4 @@
-# pfc script de Creación de Archivos con Shebang
+# script de Creación de Archivos con Shebang
 
 Este script en shell permite crear un nuevo archivo de script con un shebang y otorgarle permisos de ejecución y abrirlo con el editor nvim.
 
