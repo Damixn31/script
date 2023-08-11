@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+nameScript=$1
+
+if [ -f "$nameScript" ]; then
+  echo "Script '$nameScript' ya existe."
+else
+  echo -e "#!/bin/zsh\n" > "$nameScript"
+  echo "Script '$nameScript' creado con Shebang!"
+fi
+
+chmod +x $nameScript
+
+nvim $nameScript
