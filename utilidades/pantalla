@@ -19,14 +19,14 @@ select_imagen=""
 trap ctrl_c INT 
 
 function ctrl_c(){
-  echo "\n${GREEN}->${NC}${MAGENTA} Saliendo${NC}"
+  echo "\n${GREEN}->${NC}${MAGENTA} Salir${NC}"
   exit 0
 }
 
 # Dependencias
 function dependecies(){
   clear; dependecies=(nitrogen)
-  echo -e "${BLUE}[!]${NC}${MAGENTA} Verificando que el programa este instalado ...${NC}"
+  echo -e "${YELLOW}[!]${NC}${MAGENTA} Verificando que el programa este instalado ...${NC}"
   sleep 2
 
   test -f /usr/bin/$dependecies
@@ -43,60 +43,51 @@ dependecies
 
 # Funcion
 
-function findImg(){
-
-}
-
-
 function select_screen() {
 
      for ((i=1; i<${#imagens[@]}; i++)); do 
          only_img=$(basename "$imagens[i]")
-         echo "${BLUE}$i${NC}: ${YELLOW}$only_img${NC}"
+         echo "${RED}$i${NC}: ${MAGENTA}$only_img${NC}"
       done
 
-
-
-  echo "\n${WHITE} Selecciona el numero de la imagen que deseas usar: ${NC}" 
-    read selection
+     echo -n "\n${YELLOW} Selecciona el numero de la imagen que deseas usar: ${NC}" 
+     read selection
 
     if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt ${#imagens[@]} ]; then
       select_imagen="${imagens[$selection]}"
       only_file=$(basename "$select_imagen")
-      echo "${GREEN}---> Selecionaste: ${NC}$only_file"
+      echo "\n${GREEN}-> Selecionaste: ${NC}${MAGENTA}$only_file${NC}"
 
 
-      echo "${WHITE}Tenes otra Pantalla disponible?${NC}${GREEN}(S/n):${NC}"
+      echo -n "\n${YELLOW}Tienes otra Pantalla disponible?${NC}${GREEN}(S/n):${NC}"
       read secondScreen
 
       if [ "$secondScreen" = "s" ]; then
-        echo "${MAGENTA}Imagenes encontradas:${NC}"
+        echo "\n${YELLOW}Imagenes encontradas:${NC}"
 
         for ((i=1; i<${#imagens[@]}; i++)); do 
          only_img=$(basename "$imagens[i]")
-         echo "${BLUE}$i${NC}: ${YELLOW}$only_img${NC}"
+         echo "${RED}$i${NC}: ${MAGENTA}$only_img${NC}"
       done
 
-      echo "\n${MAGENTA}Selecciona el numero de la imagen para la segunda pantalla:${NC}"
+      echo -n "\n${YELLOW}Selecciona el numero de la imagen para la segunda pantalla:${NC}"
         read secondScreen
 
         if [[ "$secondScreen" =~ ^[0-9]+$ ]] && [ "$secondScreen" -ge 0 ] && [ "$secondScreen" -lt ${#imagens[@]} ]; then
           secondImg="${imagens[$secondScreen]}"
           only_file=$(basename "$secondImg")
-          echo "\n${GREEN}--> Fondo para segunda pantalla: ${NC}$only_file"
+          echo "\n${GREEN}-> Fondo para segunda pantalla: ${NC}${MAGENTA}$only_file${NC}"
 
       # Implementar segunda pantalla
           nitrogen --head=1 --set-zoom $secondImg > /dev/null 2>&1
         else
-          echo "\n${RED}--> Seleccion invalida.${NC}"
+          echo "\n${RED}-> Seleccion invalida.${NC}"
         fi
       fi
           
      nitrogen --head=0 --set-zoom $select_imagen > /dev/null 2>&1
-
-
-      else
-        echo "${RED}--> Seleccion invalida.${NC}"
+    else
+        echo "${RED}-> Seleccion invalida.${NC}"
     fi
  
 }
@@ -106,16 +97,13 @@ if [ -d $dirPic ]; then
   imagens=("$dirPic"/*.*)
 
   if [ ${#imagens[@]} -eq 0 ]; then
-    echo "\n${RED}--> No se encontro ninguna imagen en el directorio.${NC}"
+    echo "\n${RED}-> No se encontro ninguna imagen en el directorio.${NC}"
   else
-    echo "\n${MAGENTA}Imagenes encontradas:${}"
-
-    # function
+    echo "\n${YELLOW}Imagenes encontradas:${}"
     select_screen
-
- fi
+  fi
 else 
-  echo "\n${RED}--> El directorio no exite${NC}"
+  echo "\n${RED}-> El directorio no exite${NC}"
 fi
 
 
