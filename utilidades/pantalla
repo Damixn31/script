@@ -41,6 +41,66 @@ function dependecies(){
 
 dependecies
 
+# Funcion
+
+function findImg(){
+
+}
+
+
+function select_screen() {
+
+     for ((i=1; i<${#imagens[@]}; i++)); do 
+         only_img=$(basename "$imagens[i]")
+         echo "${BLUE}$i${NC}: ${YELLOW}$only_img${NC}"
+      done
+
+
+
+  echo "\n${WHITE} Selecciona el numero de la imagen que deseas usar: ${NC}" 
+    read selection
+
+    if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt ${#imagens[@]} ]; then
+      select_imagen="${imagens[$selection]}"
+      only_file=$(basename "$select_imagen")
+      echo "${GREEN}---> Selecionaste: ${NC}$only_file"
+
+
+      echo "${WHITE}Tenes otra Pantalla disponible?${NC}${GREEN}(S/n):${NC}"
+      read secondScreen
+
+      if [ "$secondScreen" = "s" ]; then
+        echo "${MAGENTA}Imagenes encontradas:${NC}"
+
+        for ((i=1; i<${#imagens[@]}; i++)); do 
+         only_img=$(basename "$imagens[i]")
+         echo "${BLUE}$i${NC}: ${YELLOW}$only_img${NC}"
+      done
+
+      echo "\n${MAGENTA}Selecciona el numero de la imagen para la segunda pantalla:${NC}"
+        read secondScreen
+
+        if [[ "$secondScreen" =~ ^[0-9]+$ ]] && [ "$secondScreen" -ge 0 ] && [ "$secondScreen" -lt ${#imagens[@]} ]; then
+          secondImg="${imagens[$secondScreen]}"
+          only_file=$(basename "$secondImg")
+          echo "\n${GREEN}--> Fondo para segunda pantalla: ${NC}$only_file"
+
+      # Implementar segunda pantalla
+          nitrogen --head=1 --set-zoom $secondImg > /dev/null 2>&1
+        else
+          echo "\n${RED}--> Seleccion invalida.${NC}"
+        fi
+      fi
+          
+     nitrogen --head=0 --set-zoom $select_imagen > /dev/null 2>&1
+
+
+      else
+        echo "${RED}--> Seleccion invalida.${NC}"
+    fi
+ 
+}
+
 if [ -d $dirPic ]; then
 
   imagens=("$dirPic"/*.*)
@@ -50,23 +110,10 @@ if [ -d $dirPic ]; then
   else
     echo "\n${MAGENTA}Imagenes encontradas:${}"
 
-    for ((i=1; i<${#imagens[@]}; i++)); do 
-      echo "${BLUE}$i${NC}: ${YELLOW}${imagens[i]}${NC}"
-    done
+    # function
+    select_screen
 
-    echo "\n${WHITE} Selecciona el numero de la imagen que deseas usar: ${NC}" 
-    read selection
-
-    if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt ${#imagens[@]} ]; then
-      select_imagen="${imagens[$selection]}"
-      echo "${GREEN}---> Selecionaste: ${NC}$select_imagen"
-      ## aca vamos hacer el nitrogen
-      nitrogen --head=0 --set-zoom $select_imagen > /dev/null 2>&1
-
-      else
-        echo "${RED}--> Seleccion invalida.${NC}"
-    fi
-  fi
+ fi
 else 
   echo "\n${RED}--> El directorio no exite${NC}"
 fi
