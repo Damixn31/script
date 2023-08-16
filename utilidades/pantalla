@@ -1,0 +1,75 @@
+#!/bin/zsh
+
+# Colores
+
+RED='\033[1;91m'
+GREEN='\033[1;92m'
+YELLOW='\033[1;93m'
+BLUE='\033[1;94m'
+MAGENTA='\033[1;95m'
+CYAN='\033[1;96m'
+WHITE='\033[1;97m'
+NC='\033[0m' # Sin color
+
+# variables
+dirPic="/home/hiro/pictures/"
+select_imagen=""
+
+
+trap ctrl_c INT 
+
+function ctrl_c(){
+  echo "\n${GREEN}->${NC}${MAGENTA} Saliendo${NC}"
+  exit 0
+}
+
+# Dependencias
+function dependecies(){
+  clear; dependecies=(nitrogen)
+  echo -e "${BLUE}[!]${NC}${MAGENTA} Verificando que el programa este instalado ...${NC}"
+  sleep 2
+
+  test -f /usr/bin/$dependecies
+
+  if [ "$(echo $?)" -eq "0" ]; then
+    echo "\n${GREEN}El programa nitrogen ya esta instalado.${NC}"
+  else
+    echo pacman -S $dependecies --noconfirm > /dev/null 2>&1
+    sleep 1
+  fi
+}
+
+dependecies
+
+if [ -d $dirPic ]; then
+
+  imagens=("$dirPic"/*.*)
+
+  if [ ${#imagens[@]} -eq 0 ]; then
+    echo "\n${RED}--> No se encontro ninguna imagen en el directorio.${NC}"
+  else
+    echo "\n${MAGENTA}Imagenes encontradas:${}"
+
+    for ((i=1; i<${#imagens[@]}; i++)); do 
+      echo "${BLUE}$i${NC}: ${YELLOW}${imagens[i]}${NC}"
+    done
+
+    echo "\n${WHITE} Selecciona el numero de la imagen que deseas usar: ${NC}" 
+    read selection
+
+    if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt ${#imagens[@]} ]; then
+      select_imagen="${imagens[$selection]}"
+      echo "${GREEN}---> Selecionaste: ${NC}$select_imagen"
+      ## aca vamos hacer el nitrogen
+      nitrogen --head=0 --set-zoom $select_imagen > /dev/null 2>&1
+
+      else
+        echo "${RED}--> Seleccion invalida.${NC}"
+    fi
+  fi
+else 
+  echo "\n${RED}--> El directorio no exite${NC}"
+fi
+
+
+
